@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pawfect Daily – Dog Supplement Chews</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fffaf3;--card:#fff;--ink:#2a2118;--mut:#7a6c5c;--acc:#e8672a;--line:#eadfce;--ok:#2f9e5a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17130f;--card:#231d17;--ink:#f6ece0;--mut:#b3a290;--acc:#ff8a4c;--line:#3a3028;--ok:#4cc27c}}
+:root[data-theme="dark"]{--bg:#17130f;--card:#231d17;--ink:#f6ece0;--mut:#b3a290;--acc:#ff8a4c;--line:#3a3028;--ok:#4cc27c}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.logo{font-weight:800;font-size:20px}
+.tabs button,.btn{border:0;border-radius:10px;padding:10px 14px;font:600 15px inherit;font-family:inherit;cursor:pointer}
+.tabs button{background:none;color:var(--mut)}.tabs button.on{color:var(--acc)}
+.btn{background:var(--acc);color:#fff}.btn.alt{background:var(--line);color:var(--ink)}.btn.sm{padding:6px 10px;font-size:13px}
+.hero{padding:28px 0 12px}.hero h1{font-size:34px;line-height:1.1;margin:0 0 10px}.hero p{color:var(--mut);margin:0 0 14px}
+.grid{display:grid;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.p{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.p .e{font-size:34px}.p h3{margin:0}.p small{color:var(--mut)}
+.price{font-weight:800}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin:4px 0 8px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:4px 0}
+.badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stats b{font-size:20px;display:block}
+.pipe{display:flex;gap:4px;margin:8px 0}.pipe i{flex:1;height:6px;border-radius:3px;background:var(--line)}.pipe i.d{background:var(--ok)}
+.hide{display:none}.mut{color:var(--mut)}.note{font-size:13px;color:var(--mut)}
+footer{margin-top:32px;padding:16px 0;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}footer details{margin:6px 0}footer summary{cursor:pointer;font-weight:600;color:var(--ink)}footer p{margin:6px 0}
+</style></head><body><div class="w">
+<nav><div class="logo">🐾 Pawfect Daily</div>
+<div class="tabs"><button id="t-shop" class="on" onclick="tab('shop')">Shop</button><button id="t-cart" onclick="tab('cart')">Cart (<span id="cc">0</span>)</button><button id="t-admin" onclick="tab('admin')">Orders</button></div></nav>
+
+<section id="shop">
+<div class="hero"><h1>Supplements made for <i>your</i> dog.</h1><p>Daily chews for dogs, made in small batches. Free shipping over $60.</p></div>
+<div class="grid" id="prods"></div>
+</section>
+
+<section id="cart" class="hide">
+<h2>Your cart</h2><div class="card" id="lines"></div>
+<h3>Checkout</h3>
+<div class="card">
+<input id="nm" placeholder="Full name"><input id="em" placeholder="Email" type="email"><input id="ad" placeholder="Shipping address">
+<div class="row"><span>Total</span><span class="price" id="tot">$0.00</span></div>
+<button class="btn" style="width:100%" onclick="pay()">Pay now</button>
+<p class="note" id="pn"></p></div>
+</section>
+
+<section id="admin" class="hide">
+<h2>Order dashboard</h2>
+<div class="stats"><div class="card"><b id="s1">0</b><span class="mut">Orders</span></div><div class="card"><b id="s2">$0</b><span class="mut">Revenue</span></div><div class="card"><b id="s3">0</b><span class="mut">To ship</span></div></div>
+<div class="grid" id="ords" style="margin-top:12px"></div>
+</section>
+<footer>
+<p><b>Pawfect Daily</b> is operated by <b>Laughrey's Specialty Services LLC</b>.</p>
+<p id="ct"></p>
+<details><summary>Shipping policy</summary><p>We ship within the United States only. Orders are packed and shipped within 2&ndash;3 business days. Standard shipping is $6.95, and free on orders of $60 or more. Delivery usually takes 3&ndash;7 business days after shipping. You will receive tracking by email once your order ships.</p></details>
+<details><summary>Refund policy</summary><p>Not happy? Contact us within 30 days of delivery and we will refund the purchase price, no return needed. Refunds go back to your original payment method within 5&ndash;10 business days. If your order arrives damaged or incorrect, contact us and we will replace it or refund you.</p></details>
+<p>These statements have not been evaluated by the FDA. Our products are dog supplements and are not intended to diagnose, treat, cure, or prevent any disease. Talk to your veterinarian before starting any supplement.</p>
+<p>&copy; Laughrey's Specialty Services LLC</p>
+</footer>
+<script>
+// === EDIT THESE: Stripe checks that real contact details are on your site ===
+const CONTACT={email:"YOUR-EMAIL@example.com",phone:"YOUR PHONE NUMBER",address:"YOUR BUSINESS ADDRESS"};
+document.getElementById("ct").textContent="Contact: "+CONTACT.email+" · "+CONTACT.phone+" · "+CONTACT.address;
+</script>
+</div>
+<script>
+const P=[{id:1,e:"🦴",n:"Joint Care Chews",d:"Glucosamine + turmeric",p:34},{id:2,e:"🌿",n:"Calm & Cozy Chews",d:"Calming blend: chamomile + L-theanine",p:32},{id:3,e:"✨",n:"Skin & Coat Boost",d:"Omega-3 + biotin",p:36},{id:4,e:"📦",n:"Complete Bundle (3-pack)",d:"All three, save 15%",p:85}];
+const STAGES=["Paid","Packed","Shipped","Delivered"];
+let cart={},orders=[];
+const $=i=>document.getElementById(i),m=n=>"$"+n.toFixed(2);
+function tab(t){["shop","cart","admin"].forEach(x=>{$(x).classList.toggle("hide",x!=t);$("t-"+x).classList.toggle("on",x==t)});if(t=="admin")loadOrders();draw()}
+function add(id){cart[id]=(cart[id]||0)+1;draw()}
+function rm(id){if(--cart[id]<=0)delete cart[id];draw()}
+const sub=()=>Object.keys(cart).reduce((s,i)=>s+P.find(p=>p.id==i).p*cart[i],0);
+const ship=()=>sub()>=60||!sub()?0:6.95;
+function draw(){
+$("prods").innerHTML=P.map(p=>`<div class="card p"><div style="display:flex;gap:12px;align-items:center"><span class="e">${p.e}</span><div><h3>${p.n}</h3><small>${p.d}</small></div></div><div style="text-align:right"><div class="price">${m(p.p)}</div><button class="btn sm" onclick="add(${p.id})">Add</button></div></div>`).join("");
+$("cc").textContent=Object.values(cart).reduce((a,b)=>a+b,0);
+const ids=Object.keys(cart);
+$("lines").innerHTML=ids.length?ids.map(i=>{const p=P.find(x=>x.id==i);return`<div class="row"><span>${p.e} ${p.n} × ${cart[i]}</span><span>${m(p.p*cart[i])} <button class="btn alt sm" onclick="rm(${i})">−</button></span></div>`}).join("")+`<div class="row mut"><span>Shipping</span><span>${m(ship())}</span></div>`:"<span class='mut'>Cart is empty.</span>";
+$("tot").textContent=m(sub()+ship());
+$("pn").textContent="Secure payment by Stripe. Card and shipping details are entered on the next page.";
+const rev=orders.reduce((s,o)=>s+o.total,0);
+$("s1").textContent=orders.length;$("s2").textContent="$"+Math.round(rev);$("s3").textContent=orders.filter(o=>o.st<2).length;
+$("ords").innerHTML=orders.length?orders.slice().reverse().map(o=>`<div class="card"><div class="row"><b>#${o.num} · ${o.name}</b><span class="badge">${STAGES[o.st]}</span></div><div class="note">${o.items} · ${m(o.total)} · ${o.addr}</div><div class="pipe">${STAGES.map((s,i)=>`<i class="${i<=o.st?"d":""}"></i>`).join("")}</div>${o.st<3?`<button class="btn sm" onclick="adv('${o.id}')">Mark ${STAGES[o.st+1]}</button>`:""}</div>`).join(""):"<div class='card mut'>No orders yet.</div>";
+}
+const KEY=()=>{try{return sessionStorage.getItem("pd_key")||""}catch(e){return""}};
+async function api(p,o){const r=await fetch(p,o);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.status);return j}
+async function pay(){
+if(!Object.keys(cart).length)return alert("Your cart is empty.");
+try{const r=await api("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items:Object.keys(cart).map(i=>({id:+i,qty:cart[i]})),email:$("em").value.trim()})});location.href=r.url}catch(e){alert("Checkout unavailable: "+e.message)}}
+async function loadOrders(){let k=KEY();if(!k){k=prompt("Admin key");if(!k)return;try{sessionStorage.setItem("pd_key",k)}catch(e){}}
+try{orders=(await api("/api/orders",{headers:{"x-admin-key":k}})).orders;draw()}catch(e){try{sessionStorage.removeItem("pd_key")}catch(_){}alert("Could not load orders: "+e.message)}}
+async function adv(id){const o=orders.find(x=>x.id==id);try{await api("/api/orders",{method:"POST",headers:{"x-admin-key":KEY(),"Content-Type":"application/json"},body:JSON.stringify({id,status:STAGES[o.st+1]})});await loadOrders()}catch(e){alert(e.message)}}
+if(location.search.includes("paid=1"))setTimeout(()=>alert("Thank you! Your order is confirmed."),300);
+draw();
+</script></body></html>
